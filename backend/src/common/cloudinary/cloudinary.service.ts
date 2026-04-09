@@ -34,4 +34,23 @@ export class CloudinaryService {
   uploadCoverImage(file: Express.Multer.File): Promise<string> {
     return this.upload(file, { resource_type: "image", folder: "covers" });
   }
+  //extract public_id from cloudinary URL
+  private getPublicId(url: string): string {
+    const parts = url.split("/");
+    const folder = parts[parts.length - 2];
+    const filename = parts[parts.length - 1].split(".")[0];
+    return `${folder}/${filename}`;
+  }
+
+  //delete book file from cloudinary
+  async deleteBookFile(fileUrl: string): Promise<void> {
+    const publicId = this.getPublicId(fileUrl);
+    await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+  }
+
+  //delete cover image from cloudinary
+  async deleteCoverImage(coverUrl: string): Promise<void> {
+    const publicId = this.getPublicId(coverUrl);
+    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+  }
 }

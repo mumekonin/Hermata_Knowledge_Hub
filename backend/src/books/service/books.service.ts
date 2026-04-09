@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Book, Category, } from "../schema/books.schema";
 import { Model } from "mongoose";
 import { CloudinaryService } from "../../common/cloudinary/cloudinary.service";
-import { CreateBookDto, CreateCategoryDto } from "../dto/books.dto";
+import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
 import { Multer } from 'multer';
 import { BooksResponse } from "../response/books.reponse";
 @Injectable()
@@ -73,28 +73,101 @@ export class BooksService {
         author: books.author,
         category: category.name,
         description: books.description,
-        createdAt:books.createdAt,
-        updatedAt:books.updatedAt
+        createdAt: books.createdAt,
+        updatedAt: books.updatedAt
       }
     });
     return booksResponse
   }
-  async getBookById(bookId:string){
+  async getBookById(bookId: string) {
     //check if the book exists
-    const existingBook= await this.booksModel.findById(bookId).populate("categoryId").exec();
-    if(!existingBook){
+    const existingBook = await this.booksModel.findById(bookId).populate("categoryId").exec();
+    if (!existingBook) {
       throw new BadRequestException("book not found")
     };
     const category = existingBook.categoryId as any;
-    const booksResponse: BooksResponse={
-        id: existingBook._id.toString(),
-        title: existingBook.title,
-        author: existingBook.author,
-        category: category.name,
-        description: existingBook.description,
-        createdAt:existingBook.createdAt,
-        updatedAt:existingBook.updatedAt
+    const booksResponse: BooksResponse = {
+      id: existingBook._id.toString(),
+      title: existingBook.title,
+      author: existingBook.author,
+      category: category.name,
+      description: existingBook.description,
+      createdAt: existingBook.createdAt,
+      updatedAt: existingBook.updatedAt
     }
     return booksResponse
+  }
+  async updateCategory(categoryId: string, updateCategoryDto: UpdateCategoryDto) {
+    const existingCategory = await this.categoryModel.findById(categoryId);
+
+    if (!existingCategory) {
+      throw new NotFoundException("Category not found");
+    }
+
+    if (updateCategoryDto.name)
+      existingCategory.name = updateCategoryDto.name;
+
+    if (updateCategoryDto.description)
+      existingCategory.description = updateCategoryDto.description;
+
+    await existingCategory.save();
+    return {
+      message: "Category updated successfully",
+    };
+  }
+  async updateBook(bookId: string, updateBookDto: UpdateBookDto, bookFile?: Express.Multer.File, coverFile?: Express.Multer.File,) {
+    // check if book exists
+    const existingBook = await this.booksModel.findById(bookId);
+    if (!existingBook) {
+      throw new NotFoundException("Book not found");
+    }
+
+    // if new book file uploaded — delete old one and upload new
+    if (bookFile) {
+      if (existingBook.fileUrl) {
+        await this.cloudinaryService.deleteBookFile(existingBook.fileUrl);
+      }
+      existingBook.fileUrl = await this.cloudinaryService.uploadBookFile(bookFile);
+    }
+
+    // if new cover uploaded — delete old one and upload new
+    if (coverFile) {
+      if (existingBook.coverUrl) {
+        await this.cloudinaryService.deleteCoverImage(existingBook.coverUrl);
+      }
+      existingBook.coverUrl = await this.cloudinaryService.uploadCoverImage(coverFile);
+    }
+    //check if the category exists
+    if (updateBookDto.categoryId) {
+      const categoryExists = await this.categoryModel.findById(updateBookDto.categoryId);
+      if (!categoryExists) {
+        throw new NotFoundException("Category not found");
+      }
+      existingBook.categoryId = updateBookDto.categoryId as any;
+    }
+    if (updateBookDto.title)
+      existingBook.title = updateBookDto.title;
+    if (updateBookDto.author)
+      existingBook.author = updateBookDto.author;
+    if (updateBookDto.categoryId)
+      existingBook.categoryId = updateBookDto.categoryId as any;
+    if (updateBookDto.description)
+      existingBook.description = updateBookDto.description;
+    //save the updated book
+    const updatedBook = await existingBook.save();
+
+    const updateBookResponse: BooksResponse = {
+      id: updatedBook._id.toString(),
+      title: updatedBook.title,
+      author: updatedBook.author,
+      description: updatedBook.description,
+      categoryId: updatedBook.categoryId.toString(),
+      category: "",
+      fileUrl: updatedBook.fileUrl,
+      coverUrl: updatedBook.coverUrl,
+      updatedAt: updatedBook.updatedAt,
+      createdAt: updatedBook.createdAt,
+    };
+    return updateBookResponse;
   }
 }

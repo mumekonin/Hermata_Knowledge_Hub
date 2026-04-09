@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { BooksService } from "../service/books.service";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { CreateBookDto, CreateCategoryDto } from "../dto/books.dto";
+import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
 @Controller("books")
 export class BooksController {
   constructor(
@@ -38,5 +38,29 @@ export class BooksController {
   @Get("getBookDetail/:id")
   async getBook(@Param('id') id: string) {
     return this.booksService.getBookById(id);
+  }
+  @Put("update-category/:id")
+  async updateCategory(@Param('id') id: string, @Body() updateCategory: UpdateCategoryDto) {
+    const result = await this.booksService.updateCategory(id, updateCategory);
+    return result;
+  }
+  @Put("update-book/:id")
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "bookFile", maxCount: 1 },  // optional on update
+      { name: "coverFile", maxCount: 1 },  // optional on update
+    ])
+  )
+  async updateBook(
+    @Param("id") id: string,
+    @Body() updateBookDto: UpdateBookDto,
+    @UploadedFiles()
+    files: {
+      bookFile?: Express.Multer.File[];
+      coverFile?: Express.Multer.File[];
+    },
+  ) {
+    const result = await this.booksService.updateBook(id, updateBookDto, files.bookFile?.[0], files.coverFile?.[0]);
+    return result;
   }
 }
