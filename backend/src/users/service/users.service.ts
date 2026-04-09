@@ -66,4 +66,18 @@ export class UsersService {
 
     return ({ token: jwtToken });
   }
+
+  async getUserProfile(userId:string){
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    const userProfile: UserResponse = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
+    return userProfile;
+  }
 }
