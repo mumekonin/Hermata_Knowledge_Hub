@@ -3,6 +3,7 @@ import { BooksService } from "./service/books.service";
 import { BooksController } from "./controller/books.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Book, BookSchema,Category, CategorySchema } from "./schema/books.schema";
+import { CloudinaryService } from "../common/cloudinary/cloudinary.service";
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { Book, BookSchema,Category, CategorySchema } from "./schema/books.schema
         ]),
   ],
   controllers: [BooksController],
-  providers: [BooksService]
+  providers: [BooksService , CloudinaryService]
 })
  export class BooksModule{};

@@ -6,9 +6,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { CloudinaryModule } from './common/cloudinary/claoudinary.module';
+import { BooksModule } from './books/books.module';
 
 @Module({
-  imports: [UsersModule,CloudinaryModule,
+  imports: [UsersModule,CloudinaryModule,BooksModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

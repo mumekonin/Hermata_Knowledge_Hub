@@ -3,7 +3,6 @@ import { UsersService } from "./service/users.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, userSchema,  } from "./schema/users.schema";
 import { UserController } from "./controller/users.controller";
-
 @Module({
   imports: [
     MongooseModule.forFeature([

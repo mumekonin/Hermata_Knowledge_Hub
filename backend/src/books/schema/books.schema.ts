@@ -18,9 +18,12 @@ export class Book {
 
   @Prop({ required: true })
   fileUrl!: string;        // Cloudinary book file URL
-
-  @Prop({ default: null })
-  coverUrl!: string | null; // Cloudinary cover image URL
+  @Prop({ type: String })
+  coverUrl!: string; // Cloudinary cover image URL
+  @Prop()
+  createdAt!: Date;
+  @Prop()
+  updatedAt!: Date;
 }
 export const BookSchema = SchemaFactory.createForClass(Book);
 
