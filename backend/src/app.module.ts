@@ -5,9 +5,10 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
+import { CloudinaryModule } from './common/cloudinary/claoudinary.module';
 
 @Module({
-  imports: [UsersModule,
+  imports: [UsersModule,CloudinaryModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
