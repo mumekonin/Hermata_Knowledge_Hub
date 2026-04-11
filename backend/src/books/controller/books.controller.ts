@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { BooksService } from "../service/books.service";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
+import { BookFileValidationPipe } from "../../common/pipes/fileValidation.pipe";
 @Controller("books")
 export class BooksController {
   constructor(
@@ -19,17 +20,27 @@ export class BooksController {
       { name: "coverFile", maxCount: 1 },
     ])
   )
-  async createBook(
-    @Body() createBookDto: CreateBookDto,
-    @UploadedFiles()
-    files: {
-      bookFile: Express.Multer.File[];
-      coverFile?: Express.Multer.File[];
-    },
-  ) {
-    const result = await this.booksService.createBook(createBookDto, files.bookFile[0], files.coverFile?.[0]);
-    return result;
-  }
+ @Post()
+@UseInterceptors(
+  FileFieldsInterceptor([
+    { name: "bookFile",  maxCount: 1 },
+    { name: "coverFile", maxCount: 1 },
+  ])
+)
+async createBook(
+  @Body() createBookDto: CreateBookDto,       
+  @UploadedFiles(new BookFileValidationPipe()) 
+  files: {
+    bookFile:   Express.Multer.File[];
+    coverFile?: Express.Multer.File[];
+  },
+) {
+  return this.booksService.createBook(
+    createBookDto,
+    files.bookFile[0],
+    files.coverFile?.[0],
+  );
+}
   @Get("get-all-books")
   async getAllBooks() {
     const result = await this.booksService.getAllBooks();
@@ -64,9 +75,20 @@ export class BooksController {
     return result;
   }
   @Get("get-all-categories")
-  async getAllCategories(){
+  async getAllCategories() {
     const result = await this.booksService.getAllCategories();
     return result;
   }
+  @Delete("delete-book/:id")
+  async deleteBook(@Param("id") id: string) {
+    const result = await this.booksService.deleteBook(id);
+    return result
   }
+
+  @Delete("delete-category/:id")
+  async deleteCategory(@Param("id") id: string) {
+    const result = await this.booksService.deleteCategory(id);
+    return result
+  }
+}
 

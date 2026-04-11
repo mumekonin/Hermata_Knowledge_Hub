@@ -189,5 +189,44 @@ export class BooksService {
     };
     return updateBookResponse;
   }
+//delete book
+async deleteBook(bookId: string) {
+  // check if book exists
+  const existingBook = await this.booksModel.findById(bookId);
+  if (!existingBook) {
+    throw new NotFoundException("Book not found");
+  }
 
+  //delete files from Cloudinary in parallel
+  await Promise.all([
+    existingBook.fileUrl
+      ? this.cloudinaryService.deleteBookFile(existingBook.fileUrl)
+      : Promise.resolve(),
+    existingBook.coverUrl
+      ? this.cloudinaryService.deleteCoverImage(existingBook.coverUrl)
+      : Promise.resolve(),
+  ]);
+  // delete book from MongoDB
+  await this.booksModel.findByIdAndDelete(bookId);
+  return {
+    message: "Book deleted successfully",
+  };
+}
+//delete category
+async deleteCategory(categoryId:string){
+  //check if the category exists
+  const exsistingCategory = await this.categoryModel.findById(categoryId);
+  if(!exsistingCategory){
+    throw new NotFoundException("category not found");
+  }
+  //check if there are books with this category
+  const booksWithCategory = await this.booksModel.find({categoryId:categoryId});
+  if(booksWithCategory&&booksWithCategory.length>0){
+    throw new BadRequestException("cannot delete category with books in it");
+  }
+  await this.categoryModel.findByIdAndDelete(categoryId);
+  return{
+    message:"category deleted successfully"
+  }
+}
 }
