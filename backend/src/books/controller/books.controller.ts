@@ -63,4 +63,10 @@ export class BooksController {
     const result = await this.booksService.updateBook(id, updateBookDto, files.bookFile?.[0], files.coverFile?.[0]);
     return result;
   }
-}
+  @Get("get-all-categories")
+  async getAllCategories(){
+    const result = await this.booksService.getAllCategories();
+    return result;
+  }
+  }
+

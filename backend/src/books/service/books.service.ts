@@ -15,6 +15,8 @@ export class BooksService {
     private readonly categoryModel: Model<Category>,
     private cloudinaryService: CloudinaryService,
   ) { }
+
+  //create category
   async createCategory(createCategoryDto: CreateCategoryDto) {
     //check if the category already exists
     const categoryExsists = await this.categoryModel.findOne({ name: createCategoryDto.name });
@@ -32,6 +34,7 @@ export class BooksService {
       description: saved.description
     };
   }
+  //create book
   async createBook(createBookDto: CreateBookDto, bookFile: Express.Multer.File, coverFile?: Express.Multer.File,) {
     // Upload both files to Cloudinary in parallel
     const [fileUrl, coverUrl] = await Promise.all([
@@ -59,7 +62,7 @@ export class BooksService {
       coverUrl: savedBook.coverUrl,
     };
   }
-
+ //get all books
   async getAllBooks() {
     const books = await this.booksModel.find().populate("categoryId").exec();
     if (!books || books.length === 0) {
@@ -79,6 +82,20 @@ export class BooksService {
     });
     return booksResponse
   }
+  async getAllCategories(){
+    const categories = await this.categoryModel.find()
+    if(!categories|| categories.length===0){
+      throw new NotFoundException("no categories found");
+    }
+    return categories.map((category)=>{
+      return {
+        id: category._id.toString(),
+        name: category.name,
+        description: category.description
+      }
+    })
+  }
+  //get all books by Id
   async getBookById(bookId: string) {
     //check if the book exists
     const existingBook = await this.booksModel.findById(bookId).populate("categoryId").exec();
@@ -97,6 +114,7 @@ export class BooksService {
     }
     return booksResponse
   }
+  //update category
   async updateCategory(categoryId: string, updateCategoryDto: UpdateCategoryDto) {
     const existingCategory = await this.categoryModel.findById(categoryId);
 
@@ -115,6 +133,7 @@ export class BooksService {
       message: "Category updated successfully",
     };
   }
+  //update book
   async updateBook(bookId: string, updateBookDto: UpdateBookDto, bookFile?: Express.Multer.File, coverFile?: Express.Multer.File,) {
     // check if book exists
     const existingBook = await this.booksModel.findById(bookId);
@@ -170,4 +189,5 @@ export class BooksService {
     };
     return updateBookResponse;
   }
+
 }
