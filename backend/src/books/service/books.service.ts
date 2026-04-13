@@ -303,4 +303,37 @@ async searchBook(key: string) {
     };
   });
 }
+// get books by category
+async getBooksByCategory(categoryId: string): Promise<BooksResponse[]> {
+  const categoryExists = await this.categoryModel.findById(categoryId);
+  if (!categoryExists) {
+    throw new NotFoundException("Category not found");
+  }
+  const books = await this.booksModel
+    .find({ categoryId })
+    .populate("categoryId")
+    .exec();
+
+  if (!books || books.length === 0) {
+    throw new NotFoundException("No books found in this category");
+  }
+
+  return books.map((book) => {
+    const category = book.categoryId as any;
+
+    return {
+      id: book._id.toString(),
+      title: book.title,
+      author: book.author,
+      category: category.name,
+      description: book.description,
+      fileUrl: book.fileUrl,
+      coverUrl: book.coverUrl,
+      previewUrl: this.cloudinaryService.getPreviewUrl(book.fileUrl),
+      downloadUrl: this.cloudinaryService.getDownloadUrl(book.fileUrl),
+      createdAt: book.createdAt,
+      updatedAt: book.updatedAt,
+    };
+  });
+}
 }

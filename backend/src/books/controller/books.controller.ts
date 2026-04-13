@@ -115,6 +115,11 @@ export class BooksController {
   async searchBook(@Query("key") key: string) {
     return this.booksService.searchBook(key);
   }
+  @Get("category/:id")
+  async getBooksByCategory(@Param('id') id:string){
+    const result = await this.booksService.getBooksByCategory(id);
+    return result;
+  }
   @Get("read/:id")
   async readBook(@Param("id") id: string, @Res() res: Response,) {
     const { previewUrl, title, fileUrl } = await this.booksService.readBook(id);
