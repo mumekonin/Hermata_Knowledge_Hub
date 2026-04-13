@@ -4,7 +4,7 @@ import { MulterModule } from "@nestjs/platform-express";
 import { memoryStorage } from "multer";
 import { BooksController } from "./controller/books.controller";
 import { BooksService } from "./service/books.service";
-import { Book, BookSchema, Category, CategorySchema } from "./schema/books.schema";
+import { Book, BookSchema, Category, CategorySchema,Favorite, FavoriteSchema} from "./schema/books.schema";
 import { CloudinaryService } from "../common/cloudinary/cloudinary.service";
 
 @Module({
@@ -12,6 +12,7 @@ import { CloudinaryService } from "../common/cloudinary/cloudinary.service";
     MongooseModule.forFeature([
       { name: Book.name,     schema: BookSchema },
       { name: Category.name, schema: CategorySchema },
+      {name:Favorite.name, schema:FavoriteSchema}
     ]),
     MulterModule.register({
       storage: memoryStorage(),

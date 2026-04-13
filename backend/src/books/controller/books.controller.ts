@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  Req,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import type { Response } from "express";
@@ -116,9 +117,24 @@ export class BooksController {
     return this.booksService.searchBook(key);
   }
   @Get("category/:id")
-  async getBooksByCategory(@Param('id') id:string){
+  async getBooksByCategory(@Param('id') id: string) {
     const result = await this.booksService.getBooksByCategory(id);
     return result;
+  }
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.USER)
+  @Post("add-to-favorites/:bookId")
+  async addToFavorites(@Req() req: any, @Param("bookId") bookId: string) {
+    const userId = req.user.userId;
+    console.log("user id : ",userId);
+    return this.booksService.addToFavorites(userId, bookId);
+  }
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.USER)
+  @Get("my-favorites")
+  async getUserFavorites(@Req() req: any) {
+    const userId = req.user.userId;
+    return this.booksService.getUserFavorites(userId);
   }
   @Get("read/:id")
   async readBook(@Param("id") id: string, @Res() res: Response,) {

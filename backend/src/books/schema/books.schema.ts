@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+//category shema
 @Schema({ timestamps: true })
 export class Category {
   @Prop({ required: true })
@@ -12,6 +13,8 @@ export type CategoryDocument = Category & Document & {
   updatedAt: Date;
 };
 export const CategorySchema = SchemaFactory.createForClass(Category);
+
+//book shema 
 @Schema({ timestamps: true })
 export class Book {
   @Prop({ required: true })
@@ -32,3 +35,14 @@ export type BookDocument = Book & Document & {
   updatedAt: Date;
 };
 export const BookSchema = SchemaFactory.createForClass(Book);
+
+//favorite shema
+@Schema({ timestamps: true })
+export class Favorite{
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
+  userId!: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: "Book", required: true })
+  bookId!: Types.ObjectId;
+}
+export const FavoriteSchema = SchemaFactory.createForClass(Favorite);

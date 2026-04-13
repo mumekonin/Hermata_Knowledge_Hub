@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Book, BookDocument, Category, CategoryDocument } from "../schema/books.schema";
+import { Book, BookDocument, Category, CategoryDocument, Favorite } from "../schema/books.schema";
 import { Model } from "mongoose";
 import { CloudinaryService } from "../../common/cloudinary/cloudinary.service";
 import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
@@ -13,6 +13,9 @@ export class BooksService {
     private readonly booksModel: Model<BookDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
+    @InjectModel(Favorite.name)
+    private readonly favoriteModel: Model<Favorite>,
+
     private cloudinaryService: CloudinaryService,
   ) { }
 
@@ -333,6 +336,54 @@ async getBooksByCategory(categoryId: string): Promise<BooksResponse[]> {
       downloadUrl: this.cloudinaryService.getDownloadUrl(book.fileUrl),
       createdAt: book.createdAt,
       updatedAt: book.updatedAt,
+    };
+  });
+}
+//add book to favorites
+async addToFavorites(userId: string, bookId:string) {
+    const bookExists = await this.booksModel.findById(bookId);
+    if (!bookExists) {
+      throw new NotFoundException("Book not found");
+    }
+    const existingFavorite = await this.favoriteModel.findOne({ userId, bookId });
+
+    if (existingFavorite) {
+      throw new BadRequestException("Book already in favorites");
+    }
+    const favorite = new this.favoriteModel({
+      userId:userId,
+      bookId:bookId
+    });
+    const saved = await favorite.save();
+    return {
+      id: saved._id.toString(),
+      userId: saved.userId.toString(),
+      bookId: saved.bookId.toString(),
+      message: "Book added to favorites successfully"
+    };
+  }
+  //list favorite books
+  async getUserFavorites(userId: string) {
+  const favorites = await this.favoriteModel
+    .find({ userId })
+    .populate("bookId")
+    .exec();
+
+  if (!favorites || favorites.length === 0) {
+    throw new NotFoundException("No favorite books found");
+  }
+  return favorites.map((fav) => {
+    const book = fav.bookId as any;
+    return {
+      favoriteId: fav._id.toString(),
+      book: {
+        id: book._id.toString(),
+        title: book.title,
+        author: book.author,
+        description: book.description,
+        coverUrl: book.coverUrl,
+        fileUrl: book.fileUrl,
+      }
     };
   });
 }
