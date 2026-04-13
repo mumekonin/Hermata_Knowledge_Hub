@@ -5,17 +5,23 @@ import {
   UploadedFiles, UseInterceptors,
   NotFoundException,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import type { Response } from "express";
 import { BooksService } from "../service/books.service";
 import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
 import { BookFileValidationPipe } from "../../common/pipes/fileValidation.pipe";
+import { AuthGuard } from "@nestjs/passport";
+import { DbRolesGuard } from "../../common/guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
+import { Role } from "../../common/enums/roles.enum";
 
 @Controller("books")
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Post("create-category")
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.booksService.createCategory(createCategoryDto);
@@ -25,7 +31,8 @@ export class BooksController {
   async getAllCategories() {
     return this.booksService.getAllCategories();
   }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Put("update-category/:id")
   async updateCategory(
     @Param("id") id: string,
@@ -37,7 +44,8 @@ export class BooksController {
   @Delete("delete-category/:id")
   async deleteCategory(@Param("id") id: string) {
     return this.booksService.deleteCategory(id);
-  }
+  } @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
 
   @Post("upload-book")
   @UseInterceptors(
@@ -61,11 +69,12 @@ export class BooksController {
     );
   }
 
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN || Role.USER)
   @Get("get-all-books")
   async getAllBooks() {
     return this.booksService.getAllBooks();
   }
-
   @Get("get-book/:id")
   async getBook(@Param("id") id: string) {
     return this.booksService.getBookById(id);
@@ -78,6 +87,8 @@ export class BooksController {
       { name: "coverFile", maxCount: 1 },
     ])
   )
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   async updateBook(
     @Param("id") id: string,
     @Body() updateBookDto: UpdateBookDto,
@@ -94,7 +105,8 @@ export class BooksController {
       files.coverFile?.[0],
     );
   }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Delete("delete-book/:id")
   async deleteBook(@Param("id") id: string) {
     return this.booksService.deleteBook(id);
