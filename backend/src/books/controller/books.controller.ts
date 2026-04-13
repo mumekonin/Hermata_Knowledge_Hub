@@ -4,16 +4,17 @@ import {
   Param, Post, Put, Res,
   UploadedFiles, UseInterceptors,
   NotFoundException,
+  Query,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import type { Response } from "express"; 
+import type { Response } from "express";
 import { BooksService } from "../service/books.service";
 import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
 import { BookFileValidationPipe } from "../../common/pipes/fileValidation.pipe";
 
 @Controller("books")
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(private readonly booksService: BooksService) { }
 
   @Post("create-category")
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
@@ -41,7 +42,7 @@ export class BooksController {
   @Post("upload-book")
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: "bookFile",  maxCount: 1 },
+      { name: "bookFile", maxCount: 1 },
       { name: "coverFile", maxCount: 1 },
     ])
   )
@@ -49,7 +50,7 @@ export class BooksController {
     @Body() createBookDto: CreateBookDto,
     @UploadedFiles(new BookFileValidationPipe())
     files: {
-      bookFile:   Express.Multer.File[];
+      bookFile: Express.Multer.File[];
       coverFile?: Express.Multer.File[];
     },
   ) {
@@ -73,7 +74,7 @@ export class BooksController {
   @Put("update-book/:id")
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: "bookFile",  maxCount: 1 },
+      { name: "bookFile", maxCount: 1 },
       { name: "coverFile", maxCount: 1 },
     ])
   )
@@ -82,7 +83,7 @@ export class BooksController {
     @Body() updateBookDto: UpdateBookDto,
     @UploadedFiles(new BookFileValidationPipe())
     files: {
-      bookFile?:  Express.Multer.File[];
+      bookFile?: Express.Multer.File[];
       coverFile?: Express.Multer.File[];
     },
   ) {
@@ -98,26 +99,29 @@ export class BooksController {
   async deleteBook(@Param("id") id: string) {
     return this.booksService.deleteBook(id);
   }
-
-  @Get("read/:id")
-  async readBook( @Param("id") id: string,@Res() res: Response,){
-  const { previewUrl, title, fileUrl } = await this.booksService.readBook(id);
-  const ext = fileUrl.split(".").pop();
-  const contentType = this.getContentType(fileUrl);
-  const response = await fetch(previewUrl);
-  if (!response.ok) {
-    throw new NotFoundException("File not found on Cloudinary");
+  @Get("search")
+  async searchBook(@Query("key") key: string) {
+    return this.booksService.searchBook(key);
   }
-  res.setHeader(
-    "Content-Disposition",
-    `inline; filename="${title}.${ext}"`   
-  );
-  res.setHeader("Content-Type", contentType);
-  const { Readable } = await import("stream");
-  Readable.fromWeb(response.body as any).pipe(res);
-}
+  @Get("read/:id")
+  async readBook(@Param("id") id: string, @Res() res: Response,) {
+    const { previewUrl, title, fileUrl } = await this.booksService.readBook(id);
+    const ext = fileUrl.split(".").pop();
+    const contentType = this.getContentType(fileUrl);
+    const response = await fetch(previewUrl);
+    if (!response.ok) {
+      throw new NotFoundException("File not found on Cloudinary");
+    }
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${title}.${ext}"`
+    );
+    res.setHeader("Content-Type", contentType);
+    const { Readable } = await import("stream");
+    Readable.fromWeb(response.body as any).pipe(res);
+  }
   @Get("download/:id")
-  async downloadBook(@Param("id") id: string,@Res() res:Response,) {
+  async downloadBook(@Param("id") id: string, @Res() res: Response,) {
     const { downloadUrl, title, fileUrl } =
       await this.booksService.downloadBook(id);
     const ext = fileUrl.split(".").pop();
@@ -138,14 +142,14 @@ export class BooksController {
   private getContentType(fileUrl: string): string {
     const ext = fileUrl.split(".").pop()?.toLowerCase();
     const extToMime: Record<string, string> = {
-      "pdf":  "application/pdf",
-      "doc":  "application/msword",
+      "pdf": "application/pdf",
+      "doc": "application/msword",
       "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "ppt":  "application/vnd.ms-powerpoint",
+      "ppt": "application/vnd.ms-powerpoint",
       "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      "xls":  "application/vnd.ms-excel",
+      "xls": "application/vnd.ms-excel",
       "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "txt":  "text/plain",
+      "txt": "text/plain",
     };
     return extToMime[ext || ""] || "application/octet-stream";
   }

@@ -264,4 +264,43 @@ async readBook(bookId: string) {
       downloadUrl: this.cloudinaryService.getDownloadUrl(existingBook.fileUrl),
     };
   }
+  //search books by title author and category
+async searchBook(key: string) {
+  if (!key || typeof key !== "string" || key.trim().length === 0) {
+    throw new BadRequestException("Search key must be a non-empty string");
+  }
+
+  key = key.trim();
+
+  const books = await this.booksModel
+    .find({
+      $or: [
+        { title:       { $regex: key, $options: "i" } },
+        { author:      { $regex: key, $options: "i" } },
+        { description: { $regex: key, $options: "i" } },
+      ],
+    })
+    .populate("categoryId")
+    .exec();
+
+  if (!books || books.length === 0) {
+    throw new NotFoundException(`No books found for "${key}"`);
+  }
+
+  return books.map((book) => {
+    const category = book.categoryId as any;
+    return {
+      id:          book._id.toString(),
+      title:       book.title,
+      author:      book.author,
+      category:    category.name,
+      description: book.description,
+      coverUrl:    book.coverUrl,
+      previewUrl:  this.cloudinaryService.getPreviewUrl(book.fileUrl),
+      downloadUrl: this.cloudinaryService.getDownloadUrl(book.fileUrl),
+      createdAt:   book.createdAt,
+      updatedAt:   book.updatedAt,
+    };
+  });
+}
 }
