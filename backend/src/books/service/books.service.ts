@@ -19,7 +19,7 @@ export class BooksService {
     private cloudinaryService: CloudinaryService,
   ) { }
 
-  // Category
+  // create Category
   async createCategory(createCategoryDto: CreateCategoryDto) {
     const categoryExists = await this.categoryModel.findOne({
       name: createCategoryDto.name,

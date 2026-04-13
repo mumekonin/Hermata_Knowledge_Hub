@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "../schema/users.schema";
@@ -77,6 +77,34 @@ export class UsersService {
       name: user.name,
       email: user.email,
       role: user.role
+    }
+    return userProfile;
+  }
+  async getAllUsersByRole(role:string){
+    const users = await this.userModel.find({role:role});
+    if(!users||users.length===0){
+      throw new NotFoundException('no users found with this role');
+    }
+    const usersResponse: UserResponse[] = users.map((user) => {
+      return {
+        id: user._id.toString(),
+        name: user.name,
+        role: user.role,
+        email: user.email
+      }
+    });
+    return usersResponse;
+  }
+   async getMyProfile(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    const userProfile: UserResponse = {
+      id: user._id.toString(),
+      name: user.name,
+      role: user.role,
+      email: user.email
     }
     return userProfile;
   }
