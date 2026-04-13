@@ -7,7 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { CloudinaryModule } from './common/cloudinary/claoudinary.module';
 import { BooksModule } from './books/books.module';
-
+import dns from 'dns';
+dns.setServers(["8.8.8.8","1.1.1.1"]);
 @Module({
   imports: [UsersModule,CloudinaryModule,BooksModule,
     ConfigModule.forRoot({ isGlobal: true }),

@@ -1,4 +1,3 @@
-// cloudinary/cloudinary.service.ts
 import { Injectable } from "@nestjs/common";
 import { Readable } from "stream";
 import { v2 as cloudinary } from "cloudinary";
@@ -12,7 +11,6 @@ export class CloudinaryService {
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
   }
-
   private upload(file: Express.Multer.File, options: object): Promise<string> {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
@@ -27,30 +25,70 @@ export class CloudinaryService {
     });
   }
 
-  uploadBookFile(file: Express.Multer.File): Promise<string> {
-    return this.upload(file, { resource_type: "raw", folder: "books" });
+  //Helpers
+  private getExtension(mimetype: string): string {
+    const mimeToExt: Record<string, string> = {
+      "application/pdf":                                                           "pdf",
+      "application/msword":                                                        "doc",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":  "docx",
+      "application/vnd.ms-powerpoint":                                             "ppt",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation":"pptx",
+      "application/vnd.ms-excel":                                                  "xls",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":         "xlsx",
+      "text/plain":                                                                "txt",
+    };
+    return mimeToExt[mimetype] || "pdf";
   }
 
-  uploadCoverImage(file: Express.Multer.File): Promise<string> {
-    return this.upload(file, { resource_type: "image", folder: "covers" });
-  }
-  //extract public_id from cloudinary URL
-  private getPublicId(url: string): string {
-    const parts = url.split("/");
-    const folder = parts[parts.length - 2];
+  private extractPublicId(url: string): string {
+    const parts    = url.split("/");
+    const folder   = parts[parts.length - 2];
     const filename = parts[parts.length - 1].split(".")[0];
     return `${folder}/${filename}`;
   }
 
-  //delete book file from cloudinary
+  // Upload 
+  uploadBookFile(file: Express.Multer.File): Promise<string> {
+    const ext      = this.getExtension(file.mimetype);
+    const publicId = `${Date.now()}.${ext}`;
+
+    return this.upload(file, {
+      resource_type: "raw",
+      folder:        "books",
+      public_id:     publicId,
+      access_mode:   "public",
+    });
+  }
+
+  uploadCoverImage(file: Express.Multer.File): Promise<string> {
+    return this.upload(file, {
+      resource_type: "image",
+      folder:        "covers",
+      public_id:     `${Date.now()}`,
+      access_mode:   "public",
+    });
+  }
+
+  // URL Transformations 
+  getPreviewUrl(fileUrl: string): string {
+    return fileUrl
+  }
+
+  getDownloadUrl(fileUrl: string): string {
+    return  fileUrl.replace(
+    "/raw/upload/",
+    "/raw/upload/fl_attachment:true/"
+  );
+  }
+
+  // Delete 
   async deleteBookFile(fileUrl: string): Promise<void> {
-    const publicId = this.getPublicId(fileUrl);
+    const publicId = this.extractPublicId(fileUrl);
     await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
   }
 
-  //delete cover image from cloudinary
   async deleteCoverImage(coverUrl: string): Promise<void> {
-    const publicId = this.getPublicId(coverUrl);
+    const publicId = this.extractPublicId(coverUrl);
     await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
   }
 }

@@ -1,12 +1,14 @@
-export class BooksResponse {
-  id!: string;
-  title!: string;
-  author!: string;
-  description!: string;
-  category!: string;
-  createdAt!: Date;
-  updatedAt!: Date;
+export interface BooksResponse {
+  id: string;
+  title: string;
+  author: string;
+  category?: string;
   categoryId?: string;
+  description?: string;
   fileUrl?: string;
-  coverUrl?: string;
+  coverUrl?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+   previewUrl?: string;    
+  downloadUrl?: string;
 }

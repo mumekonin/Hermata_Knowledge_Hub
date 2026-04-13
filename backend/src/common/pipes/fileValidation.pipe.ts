@@ -1,4 +1,3 @@
-// common/pipes/file-validation.pipe.ts
 import { PipeTransform, Injectable, BadRequestException } from "@nestjs/common";
 
 const ALLOWED_BOOK_TYPES: Record<string, string> = {

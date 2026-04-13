@@ -1,94 +1,152 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseInterceptors } from "@nestjs/common";
-import { BooksService } from "../service/books.service";
+// books.controller.ts
+import {
+  Body, Controller, Delete, Get,
+  Param, Post, Put, Res,
+  UploadedFiles, UseInterceptors,
+  NotFoundException,
+} from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import type { Response } from "express"; 
+import { BooksService } from "../service/books.service";
 import { CreateBookDto, CreateCategoryDto, UpdateBookDto, UpdateCategoryDto } from "../dto/books.dto";
 import { BookFileValidationPipe } from "../../common/pipes/fileValidation.pipe";
+
 @Controller("books")
 export class BooksController {
-  constructor(
-    private readonly booksService: BooksService
-  ) { }
+  constructor(private readonly booksService: BooksService) {}
+
   @Post("create-category")
-  async createCategory(@Body() createCtegory: CreateCategoryDto) {
-    const result = await this.booksService.createCategory(createCtegory);
-    return result;
+  async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.booksService.createCategory(createCategoryDto);
   }
+
+  @Get("get-all-categories")
+  async getAllCategories() {
+    return this.booksService.getAllCategories();
+  }
+
+  @Put("update-category/:id")
+  async updateCategory(
+    @Param("id") id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ) {
+    return this.booksService.updateCategory(id, updateCategoryDto);
+  }
+
+  @Delete("delete-category/:id")
+  async deleteCategory(@Param("id") id: string) {
+    return this.booksService.deleteCategory(id);
+  }
+
   @Post("upload-book")
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: "bookFile", maxCount: 1 },
+      { name: "bookFile",  maxCount: 1 },
       { name: "coverFile", maxCount: 1 },
     ])
   )
- @Post()
-@UseInterceptors(
-  FileFieldsInterceptor([
-    { name: "bookFile",  maxCount: 1 },
-    { name: "coverFile", maxCount: 1 },
-  ])
-)
-async createBook(
-  @Body() createBookDto: CreateBookDto,       
-  @UploadedFiles(new BookFileValidationPipe()) 
-  files: {
-    bookFile:   Express.Multer.File[];
-    coverFile?: Express.Multer.File[];
-  },
-) {
-  return this.booksService.createBook(
-    createBookDto,
-    files.bookFile[0],
-    files.coverFile?.[0],
-  );
-}
+  async createBook(
+    @Body() createBookDto: CreateBookDto,
+    @UploadedFiles(new BookFileValidationPipe())
+    files: {
+      bookFile:   Express.Multer.File[];
+      coverFile?: Express.Multer.File[];
+    },
+  ) {
+    return this.booksService.createBook(
+      createBookDto,
+      files.bookFile[0],
+      files.coverFile?.[0],
+    );
+  }
+
   @Get("get-all-books")
   async getAllBooks() {
-    const result = await this.booksService.getAllBooks();
-    return result
+    return this.booksService.getAllBooks();
   }
-  @Get("getBookDetail/:id")
-  async getBook(@Param('id') id: string) {
+
+  @Get("get-book/:id")
+  async getBook(@Param("id") id: string) {
     return this.booksService.getBookById(id);
   }
-  @Put("update-category/:id")
-  async updateCategory(@Param('id') id: string, @Body() updateCategory: UpdateCategoryDto) {
-    const result = await this.booksService.updateCategory(id, updateCategory);
-    return result;
-  }
+
   @Put("update-book/:id")
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: "bookFile", maxCount: 1 },  // optional on update
-      { name: "coverFile", maxCount: 1 },  // optional on update
+      { name: "bookFile",  maxCount: 1 },
+      { name: "coverFile", maxCount: 1 },
     ])
   )
   async updateBook(
     @Param("id") id: string,
     @Body() updateBookDto: UpdateBookDto,
-    @UploadedFiles()
+    @UploadedFiles(new BookFileValidationPipe())
     files: {
-      bookFile?: Express.Multer.File[];
+      bookFile?:  Express.Multer.File[];
       coverFile?: Express.Multer.File[];
     },
   ) {
-    const result = await this.booksService.updateBook(id, updateBookDto, files.bookFile?.[0], files.coverFile?.[0]);
-    return result;
+    return this.booksService.updateBook(
+      id,
+      updateBookDto,
+      files.bookFile?.[0],
+      files.coverFile?.[0],
+    );
   }
-  @Get("get-all-categories")
-  async getAllCategories() {
-    const result = await this.booksService.getAllCategories();
-    return result;
-  }
+
   @Delete("delete-book/:id")
   async deleteBook(@Param("id") id: string) {
-    const result = await this.booksService.deleteBook(id);
-    return result
+    return this.booksService.deleteBook(id);
   }
 
-  @Delete("delete-category/:id")
-  async deleteCategory(@Param("id") id: string) {
-    const result = await this.booksService.deleteCategory(id);
-    return result
+  @Get("read/:id")
+  async readBook( @Param("id") id: string,@Res() res: Response,){
+  const { previewUrl, title, fileUrl } = await this.booksService.readBook(id);
+  const ext = fileUrl.split(".").pop();
+  const contentType = this.getContentType(fileUrl);
+  const response = await fetch(previewUrl);
+  if (!response.ok) {
+    throw new NotFoundException("File not found on Cloudinary");
+  }
+  res.setHeader(
+    "Content-Disposition",
+    `inline; filename="${title}.${ext}"`   
+  );
+  res.setHeader("Content-Type", contentType);
+  const { Readable } = await import("stream");
+  Readable.fromWeb(response.body as any).pipe(res);
+}
+  @Get("download/:id")
+  async downloadBook(@Param("id") id: string,@Res() res:Response,) {
+    const { downloadUrl, title, fileUrl } =
+      await this.booksService.downloadBook(id);
+    const ext = fileUrl.split(".").pop();
+    const contentType = this.getContentType(fileUrl);
+    const response = await fetch(downloadUrl);
+    if (!response.ok) {
+      throw new NotFoundException("File not found on Cloudinary");
+    }
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${title}.${ext}"`
+    );
+    res.setHeader("Content-Type", contentType);
+    const { Readable } = await import("stream");
+    Readable.fromWeb(response.body as any).pipe(res);
+  }
+
+  private getContentType(fileUrl: string): string {
+    const ext = fileUrl.split(".").pop()?.toLowerCase();
+    const extToMime: Record<string, string> = {
+      "pdf":  "application/pdf",
+      "doc":  "application/msword",
+      "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "ppt":  "application/vnd.ms-powerpoint",
+      "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "xls":  "application/vnd.ms-excel",
+      "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "txt":  "text/plain",
+    };
+    return extToMime[ext || ""] || "application/octet-stream";
   }
 }
-
