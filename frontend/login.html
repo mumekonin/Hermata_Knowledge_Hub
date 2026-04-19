@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Modern Auth</title>
+    <link rel="stylesheet" href="style/login.css">
+</head>
+<body>
+    <div class="auth-card">  
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800" alt="Team working" class="side-img">
+            <div class="image-overlay">
+                <h2>Join us today</h2>
+                <p>Create your account and start your journey with us.</p>
+            </div>
+        </div>
+        <div class="form-wrapper">
+            <form id="loginForm" novalidate>
+                <h2 class="form-title">Login</h2>
+                <p class="form-subtitle">Fill in your details below</p>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="john@example.com" required>
+                    <span class="error-msg" id="emailError"></span>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <span class="error-msg" id="passwordError"></span>
+                </div>
+                <div id="generalError" class="general-error"></div>
+                <button type="submit" id="submitBtn">
+                    <span id="btnText">Login</span>
+                    <div class="spinner" id="loader"></div>
+                </button>
+                <p class="redirect-text">
+                    Don't have an account? <a href="Registartion.html">Sign up</a>
+                </p>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="script/login.js"></script>
+</body>
+</html>
