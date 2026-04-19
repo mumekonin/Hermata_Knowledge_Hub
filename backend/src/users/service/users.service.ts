@@ -108,4 +108,13 @@ export class UsersService {
     }
     return userProfile;
   }
+  // async logoutUser(currentUserId: string) {
+  //   const user = await this.userModel.findById(currentUserId);
+  //   if (!user) {
+  //     throw new BadRequestException('user not found');
+  //   }
+  //   user.refreshToken = null;
+  //   await user.save();
+  //   return { message: 'User logged out successfully' };
+  // }
 }

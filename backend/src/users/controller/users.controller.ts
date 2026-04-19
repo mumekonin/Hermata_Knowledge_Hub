@@ -36,3 +36,23 @@ export class UserController {
     return result;
   }
 }
+// http://localhost:3000/users/allUsersByRole/admin
+// http://localhost:3000/users/profile
+// http://localhost:3000/books/create-category
+// http://localhost:3000/books/upload-book
+// http://localhost:3000/books/get-all-books
+// http://localhost:3000/books/update-category/
+// http://localhost:3000/books/update-book/69d76c03aad9677bf4b3de14
+// http://localhost:3000/books/get-all-categories
+// http://localhost:3000/books/delete-book/69d76c03aad9677bf4b3de14
+
+// http://localhost:3000/books/getBookDetail/69d76c03aad9677bf4b3de14
+// http://localhost:3000/users/register
+// http://localhost:3000/users/login
+// http://localhost:3000/users/logout
+// http://localhost:3000/books/read/69dcc3480114b6c49b68d1cd
+// http://localhost:3000/books/download/69dcc3480114b6c49b68d1cd
+// http://localhost:3000/books/search?key=HISTORY OF ETHIOPIA AND THE HORN
+// http://localhost:3000/books/category/
+// http://localhost:3000/books/add-to-favorites/69dcceeef99b57d38ff1933d
+// http://localhost:3000/books/my-favorites

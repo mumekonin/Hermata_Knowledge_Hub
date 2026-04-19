@@ -21,8 +21,8 @@ import { Role } from "../../common/enums/roles.enum";
 @Controller("books")
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
-  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  @Roles(Role.ADMIN)
+  // @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  // @Roles(Role.ADMIN)
   @Post("create-category")
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.booksService.createCategory(createCategoryDto);

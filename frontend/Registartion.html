@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style/Registartion.css" />
+</head>
+<body>
+
+  <div class="container">
+    <!-- image part -->
+    <div class="left">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&auto=format&fit=crop" alt="Team" />
+      <div class="left-text">
+        <h2>Join us today</h2>
+        <p>Create your account and start your journey with us.</p>
+      </div>
+    </div>
+    <!-- form part -->
+    <div class="right">
+      <h1>Create Account</h1>
+      <p class="subtitle">Fill in your details below</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="John Doe" />
+        <span class="error" id="nameError"></span>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="john@example.com" />
+        <span class="error" id="emailError"></span>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 8 characters" />
+        <span class="error" id="passwordError"></span>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat password" />
+        <span class="error" id="confirmError"></span>
+      </div>
+      <button id="submitBtn" onclick="register()">Create Account</button>
+      <div id="successMsg" class="success"></div>
+      <div id="serverErrorMsg" class="error"></div>
+      <p class="login-link">Already have an account? <a href="#">Sign in</a></p>
+    </div>
+  </div>
+  <script src="script/Registartion.js"></script>
+</body>
+</html>
