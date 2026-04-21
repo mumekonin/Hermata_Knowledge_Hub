@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermata Knowledge Hub — My Favorites</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style/base.css">
+  <link rel="stylesheet" href="style/favorites.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">
+        <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+        <span class="brand-name">Hermata Knowledge Hub</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars" id="toggleIcon"></i>
+      </button>
+      <div class="nav-wrapper" id="navWrapper">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="dashboard.html" class="link">Home</a>
+          <a href="browse.html"    class="link">Browse</a>
+          <a href="category.html"  class="link">Categories</a>
+          <a href="favorites.html" class="link active">Favorites</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="search-bar">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="text" placeholder="e.g. History" aria-label="Quick search">
+          </div>
+          <a href="favorites.html" class="favorite-sticker" aria-label="View favorites">
+            <i class="far fa-heart" aria-hidden="true"></i>
+          </a>
+          <div class="auth-group">
+            <a href="login.html"        class="auth-link">Login</a>
+            <a href="registration.html" class="auth-link auth-link--register">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- favorites -->
+  <main class="fav-container">
+    <header class="fav-header">
+      <div class="fav-header-top">
+        <h1 class="fav-title">My favorites</h1>
+        <button id="logout-btn" class="fav-signout">Sign out</button>
+      </div>
+      <p class="fav-subtitle">Your saved books, all in one place.</p>
+    </header>
+
+    <div id="fav-grid" class="fav-book-grid"></div>
+  </main>
+
+  <!--  FOOTER  -->
+  <footer class="ath-footer">
+    <div class="ath-footer-container">
+
+      <div class="ath-footer-brand">
+        <div class="ath-logo-box">
+          <span class="ath-logo-icon" aria-hidden="true">📖</span>
+          <h2 class="ath-logo-text">Athenaeum</h2>
+        </div>
+        <p class="ath-mission">
+          A modern public library — open access to thousands of titles spanning history,
+          science, literature and the cultural heritage of the Horn of Africa.
+        </p>
+      </div>
+
+      <div class="ath-footer-group">
+        <h3 class="ath-group-title">Discover</h3>
+        <ul class="ath-links">
+          <li><a href="browse.html">All books</a></li>
+          <li><a href="category.html">Categories</a></li>
+          <li><a href="favorites.html">My favorites</a></li>
+        </ul>
+      </div>
+
+      <div class="ath-footer-group">
+        <h3 class="ath-group-title">Library</h3>
+        <ul class="ath-info-list">
+          <li>Open Mon–Sun</li>
+          <li>Always free</li>
+          <li>
+            <a href="mailto:community@athenaeum.org" class="ath-email">
+              community@athenaeum.org
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="ath-footer-bottom">
+      <div class="ath-bottom-content">
+        <p class="ath-copyright">© 2026 Hermata Knowledge HubPublic Library. All rights reserved.</p>
+        <p class="ath-tagline">Built for readers, by readers.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="script/auth.js"></script>
+  <script src="script/favorites.js"></script>
+</body>
+</html>

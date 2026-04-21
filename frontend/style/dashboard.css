@@ -1,0 +1,565 @@
+/* ── HERO SECTION ─────────────────────────────────────────────────── */
+.hero-section {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 8%;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.97) 0%,
+      rgba(255, 255, 255, 0.88) 50%,
+      rgba(255, 255, 255, 0.45) 100%
+    ),
+    url('https://australiareads.org.au/wp-content/uploads/2023/11/Libraries-%E2%80%93-USED.png')
+    center / cover no-repeat;
+}
+
+.hero-container {
+  max-width: 780px;
+  width: 100%;
+}
+
+/* Badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f5f9;
+  padding: 6px 18px;
+  border-radius: 30px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 28px;
+}
+
+.hero-badge .sparkle {
+  color: var(--color-orange);
+  font-weight: 700;
+}
+
+.hero-badge p {
+  font-size: 0.82rem;
+  color: var(--color-slate);
+  font-weight: 500;
+}
+
+/* Headline */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  font-weight: 700;
+  color: var(--color-midnight);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 22px;
+}
+
+.hero-title .emphasize {
+  font-style: italic;
+  color: var(--color-orange);
+}
+
+/* Description */
+.hero-description {
+  font-size: 1.08rem;
+  color: #334155;
+  line-height: 1.75;
+  max-width: 620px;
+  margin-bottom: 44px;
+}
+
+/* Search pill */
+.search-pill-container {
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  border: 1px solid #cbd5e1;
+  padding: 6px;
+  border-radius: 50px;
+  max-width: 580px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 56px;
+}
+
+.search-input-box {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding-left: 16px;
+  gap: 10px;
+}
+
+.search-input-box i {
+  color: var(--color-slate-lt);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.search-input-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: var(--color-midnight);
+  background: transparent;
+}
+
+.search-input-box input::placeholder {
+  color: var(--color-slate-lt);
+}
+
+.search-btn {
+  background: var(--color-midnight);
+  color: var(--color-white);
+  border: none;
+  padding: 12px 34px;
+  border-radius: 40px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.25s var(--ease-smooth);
+}
+
+.search-btn:hover {
+  background: #1e3a6d;
+}
+
+/* Stats row */
+.hero-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 28px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-slate);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stat-box i {
+  color: var(--color-orange);
+}
+
+.stat-v-divider {
+  width: 1px;
+  height: 18px;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.stat-right-label {
+  margin-left: auto;
+  color: var(--color-slate);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Hero: responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 64px 20px;
+    min-height: auto;
+  }
+
+  .search-pill-container {
+    margin-bottom: 40px;
+  }
+
+  .search-btn {
+    padding: 11px 22px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 550px) {
+  .hero-stats-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .stat-v-divider {
+    display: none;
+  }
+
+  .stat-right-label {
+    margin-left: 0;
+  }
+}
+
+
+/*  CATEGORY SECTION  */
+.category-section {
+  padding: 90px 8%;
+  background: var(--color-white);
+}
+
+.category-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 44px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  margin-bottom: 6px;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--color-slate);
+}
+
+.all-cats-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-midnight);
+  transition: gap 0.25s var(--ease-smooth), color 0.2s;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+
+.all-cats-btn:hover {
+  gap: 14px;
+  color: var(--color-orange);
+}
+
+/* Grid */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+/* Card */
+.category-card {
+  background: var(--color-white);
+  border: 1px solid #f0f4f8;
+  padding: 36px 24px;
+  border-radius: 14px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+}
+
+.category-card:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--shadow-lg);
+}
+
+.category-card i {
+  color: var(--color-orange);
+  font-size: 1.75rem;
+  margin-bottom: 16px;
+}
+
+.cat-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  margin-bottom: 10px;
+}
+
+.cat-desc {
+  font-size: 0.85rem;
+  color: var(--color-slate);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.loader {
+  color: var(--color-slate);
+  font-size: 0.9rem;
+  padding: 20px;
+}
+
+/* Category: responsive */
+@media (max-width: 1100px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .category-section { padding: 64px 20px; }
+
+  .category-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .section-title { font-size: 1.8rem; }
+}
+
+@media (max-width: 480px) {
+  .category-grid { grid-template-columns: 1fr; }
+}
+
+
+/*  FEATURED TITLES  */
+.featured-section {
+  padding: 90px 8%;
+  background: var(--color-white);
+}
+
+.featured-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+}
+
+.featured-header h2 {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  margin-bottom: 6px;
+}
+
+.featured-header p {
+  font-size: 1rem;
+  color: var(--color-slate);
+}
+
+.see-all {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-midnight);
+  border-bottom: 1.5px solid transparent;
+  padding-bottom: 3px;
+  transition: color 0.2s, border-color 0.2s, letter-spacing 0.2s;
+}
+
+.see-all:hover {
+  color: var(--color-orange);
+  border-bottom-color: var(--color-orange);
+}
+
+/* Books grid */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px 28px;
+}
+
+/* Book card */
+.book-card {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s var(--ease-smooth);
+}
+
+.book-card:hover {
+  transform: translateY(-8px);
+}
+
+.book-cover-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 2 / 2.8;
+  margin-bottom: 18px;
+}
+
+.book-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s ease;
+}
+
+.book-card:hover .book-cover-img {
+  transform: scale(1.07);
+}
+
+.category-badge {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  padding: 4px 11px;
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-midnight);
+  border-radius: 30px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.book-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+
+.book-author {
+  font-size: 0.88rem;
+  color: var(--color-slate);
+}
+
+/* Featured: responsive */
+@media (max-width: 1200px) {
+  .featured-section { padding: 80px 6%; }
+}
+
+@media (max-width: 1024px) {
+  .books-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .featured-section { padding: 60px 20px; }
+
+  .featured-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .featured-header h2 { font-size: 1.85rem; }
+
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+
+/* ── NEW ARRIVALS ─────────────────────────────────────────────────── */
+.na-section {
+  padding: 90px 8%;
+  background: var(--color-white);
+}
+
+.na-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.na-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  margin-bottom: 44px;
+}
+
+.na-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
+}
+
+.na-loader {
+  color: var(--color-slate);
+  font-size: 0.9rem;
+  padding: 20px;
+  grid-column: 1 / -1;
+}
+
+.na-item-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.na-link-wrapper {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.na-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s var(--ease-smooth);
+}
+
+.na-link-wrapper:hover .na-cover-img {
+  transform: scale(1.09);
+}
+
+.na-pill {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-midnight);
+  z-index: 2;
+}
+
+.na-book-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-midnight);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.na-book-author {
+  font-size: 0.83rem;
+  color: var(--color-slate);
+}
+
+/* New arrivals: responsive */
+@media (max-width: 1024px) {
+  .na-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .na-section { padding: 60px 20px; }
+  .na-title { font-size: 1.85rem; }
+  .na-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}

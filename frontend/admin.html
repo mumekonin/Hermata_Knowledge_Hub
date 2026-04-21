@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Library — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style/admin.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+
+<body>
+
+  <div class="shell">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo">EL</div>
+        <div class="brand-text">
+          <span class="brand-title">E-Library</span>
+          <span class="brand-sub">Admin Console</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-label">Overview</div>
+        <a href="#" class="nav-link active" data-view="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          Dashboard
+        </a>
+
+        <div class="nav-label">Users</div>
+        <a href="#" class="nav-link" data-view="users-view">
+          <i data-lucide="users"></i>
+          User Directory
+        </a>
+
+        <div class="nav-label">Library</div>
+        <a href="#" class="nav-link" data-view="books-view">
+          <i data-lucide="book-open"></i>
+          Books
+        </a>
+        <a href="#" class="nav-link" data-view="add-book-view">
+          <i data-lucide="book-plus"></i>
+          Add / Edit Book
+        </a>
+
+        <div class="nav-label">Categories</div>
+        <a href="#" class="nav-link" data-view="categories-view">
+          <i data-lucide="layout-grid"></i>
+          All Categories
+        </a>
+        <a href="#" class="nav-link" data-view="add-category-view">
+          <i data-lucide="folder-plus"></i>
+          Add Category
+        </a>
+        <a href="#" class="nav-link" data-view="manage-category-view">
+          <i data-lucide="settings-2"></i>
+          Manage Category
+        </a>
+
+        <div class="nav-spacer"></div>
+
+        <a href="#" class="nav-link nav-logout" id="btn-logout">
+          <i data-lucide="log-out"></i>
+          Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <div class="main">
+
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburger" aria-label="Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumb">
+            Admin <em>›</em> <span id="bread-label">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="admin-chip">
+            <div class="chip-avatar" id="nav-avatar">A</div>
+            <div class="chip-meta">
+              <span id="admin-name">Loading…</span>
+              <small id="admin-role">ADMIN</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- ============ DASHBOARD ============ -->
+        <section id="dashboard" class="view active">
+          <div class="page-head">
+            <div>
+              <h1>Welcome back, <span id="admin-greeting">Admin</span></h1>
+              <p>Live overview of your digital library.</p>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card" style="--c:#6366f1">
+              <div class="stat-icon"><i data-lucide="users"></i></div>
+              <div>
+                <div class="stat-num" id="stat-students">0</div>
+                <div class="stat-lbl">Users</div>
+              </div>
+            </div>
+
+            <div class="stat-card" style="--c:#0ea5e9">
+              <div class="stat-icon"><i data-lucide="shield-check"></i></div>
+              <div>
+                <div class="stat-num" id="stat-admins">0</div>
+                <div class="stat-lbl">Admins</div>
+              </div>
+            </div>
+
+            <div class="stat-card" style="--c:#10b981">
+              <div class="stat-icon"><i data-lucide="book-open"></i></div>
+              <div>
+                <div class="stat-num" id="stat-books">0</div>
+                <div class="stat-lbl">Total Books</div>
+              </div>
+            </div>
+
+            <div class="stat-card" style="--c:#f59e0b">
+              <div class="stat-icon"><i data-lucide="layout-grid"></i></div>
+              <div>
+                <div class="stat-num" id="stat-cats">0</div>
+                <div class="stat-lbl">Categories</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ USERS ============ -->
+        <section id="users-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>User Directory</h1>
+              <p>Browse all registered users by role.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="filter-row">
+              <select id="role-select" class="select">
+                <option value="user">Users</option>
+                <option value="admin">Admins</option>
+              </select>
+              <button class="btn btn-primary" id="btn-fetch-users">Fetch Users</button>
+            </div>
+            <div id="users-list"></div>
+          </div>
+        </section>
+
+        <!-- ============ BOOKS ============ -->
+        <section id="books-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>Books Inventory</h1>
+              <p>All books currently in the library.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-reload-books">
+              <i data-lucide="refresh-cw"></i> Refresh
+            </button>
+          </div>
+
+          <!-- SEARCH -->
+          <div class="card" style="margin-bottom:1.25rem;">
+            <form id="form-search-books" class="search-row">
+              <div class="search-input-wrap">
+                <i data-lucide="search"></i>
+                <input type="text" id="search-key" placeholder="Search by title, author or description…" />
+              </div>
+              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="button" class="btn btn-ghost" id="btn-clear-search">Clear</button>
+            </form>
+          </div>
+
+          <div id="books-grid" class="grid-books"></div>
+        </section>
+
+        <!-- ============ ADD / EDIT BOOK ============ -->
+        <section id="add-book-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>Add / Edit Book</h1>
+              <p>Upload a new book or update an existing one.</p>
+            </div>
+          </div>
+
+          <!-- ADD -->
+          <div class="card">
+            <h3 class="card-title">Upload New Book</h3>
+            <form id="form-add-book">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Title <span class="req">*</span></label>
+                  <input type="text" id="b-title" required />
+                </div>
+                <div class="field">
+                  <label>Author <span class="req">*</span></label>
+                  <input type="text" id="b-author" required />
+                </div>
+                <div class="field">
+                  <label>Category <span class="req">*</span></label>
+                  <select id="b-category" required>
+                    <option value="">Select a category</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Book File (PDF) <span class="req">*</span></label>
+                  <input type="file" id="b-file" accept="application/pdf" required />
+                </div>
+                <div class="field field-full">
+                  <label>Description</label>
+                  <textarea id="b-desc" rows="3"></textarea>
+                </div>
+                <div class="field field-full">
+                  <label>Cover Image</label>
+                  <input type="file" id="b-cover" accept="image/*" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Upload Book</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- UPDATE -->
+          <div class="card" style="margin-top:1.5rem;">
+            <h3 class="card-title">Update Existing Book</h3>
+            <form id="form-update-book">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Book ID <span class="req">*</span></label>
+                  <input type="text" id="ub-id" required />
+                </div>
+                <div class="field">
+                  <label>New Title</label>
+                  <input type="text" id="ub-title" />
+                </div>
+                <div class="field">
+                  <label>New Author</label>
+                  <input type="text" id="ub-author" />
+                </div>
+                <div class="field">
+                  <label>New Category</label>
+                  <select id="ub-category">
+                    <option value="">Keep current</option>
+                  </select>
+                </div>
+                <div class="field field-full">
+                  <label>New Description</label>
+                  <textarea id="ub-desc" rows="3"></textarea>
+                </div>
+                <div class="field">
+                  <label>Replace Book File</label>
+                  <input type="file" id="ub-file" accept="application/pdf" />
+                </div>
+                <div class="field">
+                  <label>Replace Cover Image</label>
+                  <input type="file" id="ub-cover" accept="image/*" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Book</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- DELETE -->
+          <div class="card card-danger" style="margin-top:1.5rem;">
+            <h3 class="card-title danger-title">Delete Book</h3>
+            <p class="danger-hint">This action is permanent and cannot be undone.</p>
+            <div class="inline-row">
+              <input type="text" id="del-book-id" placeholder="Book ID" />
+              <button class="btn btn-danger" id="btn-del-book">Delete</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CATEGORIES (LIST ONLY) ============ -->
+        <section id="categories-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>All Categories</h1>
+              <p>All book categories in the library.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-reload-cats">
+              <i data-lucide="refresh-cw"></i> Refresh
+            </button>
+          </div>
+
+          <div id="cats-grid" class="grid-cats"></div>
+        </section>
+
+        <!-- ============ ADD CATEGORY ============ -->
+        <section id="add-category-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>Add Category</h1>
+              <p>Create a new book category.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">New Category</h3>
+            <form id="form-add-cat">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Name <span class="req">*</span></label>
+                  <input type="text" id="cat-name" required />
+                </div>
+                <div class="field field-full">
+                  <label>Description</label>
+                  <textarea id="cat-desc" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Create Category</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <!-- ============ MANAGE CATEGORY (UPDATE + DELETE) ============ -->
+        <section id="manage-category-view" class="view">
+          <div class="page-head">
+            <div>
+              <h1>Manage Category</h1>
+              <p>Update or delete an existing category.</p>
+            </div>
+          </div>
+
+          <!-- UPDATE CAT -->
+          <div class="card">
+            <h3 class="card-title">Update Category</h3>
+            <form id="form-update-cat">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Category ID <span class="req">*</span></label>
+                  <input type="text" id="uc-id" required />
+                </div>
+                <div class="field">
+                  <label>New Name</label>
+                  <input type="text" id="uc-name" />
+                </div>
+                <div class="field field-full">
+                  <label>New Description</label>
+                  <textarea id="uc-desc" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Category</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- DELETE CAT -->
+          <div class="card card-danger" style="margin-top:1.5rem;">
+            <h3 class="card-title danger-title">Delete Category</h3>
+            <p class="danger-hint">Cannot delete a category that has books assigned to it.</p>
+            <div class="inline-row">
+              <input type="text" id="del-cat-id" placeholder="Category ID" />
+              <button class="btn btn-danger" id="btn-del-cat">Delete</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="script/admin.js"></script>
+</body>
+
+</html>

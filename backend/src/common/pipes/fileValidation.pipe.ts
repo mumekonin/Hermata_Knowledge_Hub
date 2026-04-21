@@ -10,7 +10,6 @@ const ALLOWED_BOOK_TYPES: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
   "text/plain": "txt",
 };
-
 const ALLOWED_COVER_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png":  "png",

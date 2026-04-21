@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermata Knowledge Hub — Book Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style/base.css">
+  <link rel="stylesheet" href="style/download.css">
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">
+        <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+        <span class="brand-name">Hermata Knowledge Hub</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars" id="toggleIcon"></i>
+      </button>
+      <div class="nav-wrapper" id="navWrapper">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="dashboard.html" class="link">Home</a>
+          <a href="browse.html" class="link">Browse</a>
+          <a href="category.html" class="link">Categories</a>
+          <a href="favorites.html" class="link">Favorites</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="search-bar">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="text" placeholder="e.g. History" aria-label="Quick search">
+          </div>
+          <a href="favorites.html" class="favorite-sticker" aria-label="View favorites">
+            <i class="far fa-heart" aria-hidden="true"></i>
+          </a>
+          <div class="auth-group">
+            <a href="login.html" class="auth-link">Login</a>
+            <a href="registration.html" class="auth-link auth-link--register">Register</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+  <!-- Book detail -->
+  <main class="dl-container">
+    <nav class="dl-nav">
+      <a href="javascript:history.back()" class="dl-back">← Back to library</a>
+    </nav>
+
+    <section id="dl-content" class="dl-layout">
+      <aside class="dl-media-stack">
+        <div class="dl-cover-wrapper">
+          <img id="book-cover" src="" alt="Book Cover">
+        </div>
+
+        <div class="dl-actions">
+          <button id="btn-read" class="btn-primary">
+            <i class="fas fa-eye"></i> Read online
+          </button>
+          <button id="btn-download" class="btn-secondary">
+            <i class="fas fa-download"></i> Download
+          </button>
+          <button id="btn-fav" class="btn-tertiary">
+            <i class="far fa-heart"></i> <span id="fav-text">Add to favorites</span>
+          </button>
+        </div>
+      </aside>
+      <article class="dl-details">
+        <span id="book-category" class="dl-badge"></span>
+        <h1 id="book-title" class="dl-main-title"></h1>
+        <p id="book-author" class="dl-author-text"></p>
+
+        <div class="dl-meta-grid">
+          <div class="meta-card">
+            <i class="far fa-calendar"></i>
+            <div>
+              <p class="meta-label">PUBLISHED</p>
+              <p id="book-year" class="meta-value"></p>
+            </div>
+          </div>
+        </div>
+        <div class="dl-about">
+          <h3>About this book</h3>
+          <p id="book-description"></p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!--  FOOTER  -->
+  <footer class="ath-footer">
+    <div class="ath-footer-container">
+
+      <div class="ath-footer-brand">
+        <div class="ath-logo-box">
+          <span class="ath-logo-icon" aria-hidden="true">📖</span>
+          <h2 class="ath-logo-text">Hermata Knowledge Hub</h2>
+        </div>
+        <p class="ath-mission">
+          A modern public library — open access to thousands of titles spanning history,
+          science, literature and the cultural heritage of the Horn of Africa.
+        </p>
+      </div>
+
+      <div class="ath-footer-group">
+        <h3 class="ath-group-title">Discover</h3>
+        <ul class="ath-links">
+          <li><a href="browse.html">All books</a></li>
+          <li><a href="category.html">Categories</a></li>
+          <li><a href="favorites.html">My favorites</a></li>
+        </ul>
+      </div>
+
+      <div class="ath-footer-group">
+        <h3 class="ath-group-title">Library</h3>
+        <ul class="ath-info-list">
+          <li>Open Mon–Sun</li>
+          <li>Always free</li>
+          <li>
+            <a href="mailto:community@athenaeum.org" class="ath-email">
+              community@athenaeum.org
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="ath-footer-bottom">
+      <div class="ath-bottom-content">
+        <p class="ath-copyright">© 2026 Hermata Knowledge Hub Public Library. All rights reserved.</p>
+        <p class="ath-tagline">Built for readers, by readers.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script/auth.js"></script>
+  <script src="script/download.js"></script>
+</body>
+
+</html>

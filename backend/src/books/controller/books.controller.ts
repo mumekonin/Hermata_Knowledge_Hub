@@ -21,13 +21,12 @@ import { Role } from "../../common/enums/roles.enum";
 @Controller("books")
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
-  // @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Post("create-category")
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.booksService.createCategory(createCategoryDto);
   }
-
   @Get("get-all-categories")
   async getAllCategories() {
     return this.booksService.getAllCategories();
@@ -41,11 +40,13 @@ export class BooksController {
   ) {
     return this.booksService.updateCategory(id, updateCategoryDto);
   }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Delete("delete-category/:id")
   async deleteCategory(@Param("id") id: string) {
     return this.booksService.deleteCategory(id);
-  } @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  }
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
   @Roles(Role.ADMIN)
 
   @Post("upload-book")
@@ -70,8 +71,6 @@ export class BooksController {
     );
   }
 
-  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
-  @Roles(Role.ADMIN || Role.USER)
   @Get("get-all-books")
   async getAllBooks() {
     return this.booksService.getAllBooks();
@@ -80,7 +79,8 @@ export class BooksController {
   async getBook(@Param("id") id: string) {
     return this.booksService.getBookById(id);
   }
-
+  @UseGuards(AuthGuard('jwt'), DbRolesGuard)
+  @Roles(Role.ADMIN)
   @Put("update-book/:id")
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -126,7 +126,7 @@ export class BooksController {
   @Post("add-to-favorites/:bookId")
   async addToFavorites(@Req() req: any, @Param("bookId") bookId: string) {
     const userId = req.user.userId;
-    console.log("user id : ",userId);
+    console.log("user id : ", userId);
     return this.booksService.addToFavorites(userId, bookId);
   }
   @UseGuards(AuthGuard('jwt'), DbRolesGuard)
@@ -171,7 +171,10 @@ export class BooksController {
     const { Readable } = await import("stream");
     Readable.fromWeb(response.body as any).pipe(res);
   }
-
+  @Get('new-arrivals')
+  async getNewArrivals() {
+    return this.booksService.getNewArrivals();
+  }
   private getContentType(fileUrl: string): string {
     const ext = fileUrl.split(".").pop()?.toLowerCase();
     const extToMime: Record<string, string> = {

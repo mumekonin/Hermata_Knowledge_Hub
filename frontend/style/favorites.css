@@ -1,0 +1,115 @@
+:root {
+  --midnight: #122341;
+  /* From your brand */
+  --slate: #64748b;
+  --transition: all 0.3s ease;
+}
+
+.fav-container {
+  padding: 80px 8%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.fav-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.fav-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--midnight);
+  margin: 0;
+}
+
+.fav-signout {
+  background: none;
+  border: none;
+  color: var(--midnight);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.fav-subtitle {
+  color: var(--slate);
+  font-size: 1.1rem;
+  margin-bottom: 50px;
+}
+
+/* Grid States */
+.fav-book-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+}
+
+.fav-card {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.fav-img-box {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+  background: #f1f5f9;
+}
+
+.fav-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.fav-card:hover img {
+  transform: scale(1.05);
+}
+
+.fav-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--midnight);
+  text-transform: uppercase;
+}
+
+.fav-book-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--midnight);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.fav-author-name {
+  color: var(--slate);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Mobile Adaptability */
+@media (max-width: 768px) {
+  .fav-book-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .fav-title {
+    font-size: 2.5rem;
+  }
+}

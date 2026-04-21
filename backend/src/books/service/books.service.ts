@@ -363,7 +363,7 @@ async addToFavorites(userId: string, bookId:string) {
     };
   }
   //list favorite books
-  async getUserFavorites(userId: string) {
+async getUserFavorites(userId: string) {
   const favorites = await this.favoriteModel
     .find({ userId })
     .populate("bookId")
@@ -372,7 +372,9 @@ async addToFavorites(userId: string, bookId:string) {
   if (!favorites || favorites.length === 0) {
     throw new NotFoundException("No favorite books found");
   }
-  return favorites.map((fav) => {
+  const validFavorites = favorites.filter(fav => fav.bookId !== null);
+
+  return validFavorites.map((fav) => {
     const book = fav.bookId as any;
     return {
       favoriteId: fav._id.toString(),
@@ -386,5 +388,36 @@ async addToFavorites(userId: string, bookId:string) {
       }
     };
   });
+}
+//get new arrivals
+async getNewArrivals() {
+  const books = await this.booksModel
+    .find()
+    .sort({ createdAt: -1 }) 
+    .limit(8)
+    .populate("categoryId")
+    .exec();
+
+  if (!books || books.length === 0) {
+    throw new NotFoundException("No new arrival books found");
+  }
+
+  const booksResponse: BooksResponse[] = books.map((book) => {
+    const category = book.categoryId as any;
+
+    return {
+      id: book._id.toString(),
+      title: book.title,
+      author: book.author,
+      category: category?.name || "Unknown",
+      description: book.description,
+      fileUrl: book.fileUrl,
+      coverUrl: book.coverUrl,
+      createdAt: book.createdAt,
+      updatedAt: book.updatedAt,
+    };
+  });
+
+  return booksResponse;
 }
 }

@@ -1,0 +1,224 @@
+/* --- BROWSE (BR) FULL STYLESHEET --- */
+
+:root {
+    /* Brand Colors */
+    --br-midnight: #122341; 
+    --br-slate: #64748b;
+    --br-border: #e2e8f0;
+    --br-bg-light: #fcfcfc;
+    --br-white: #ffffff;
+    
+    /* Animation & Shadow */
+    --br-transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    --br-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Page Wrapper */
+.br-page-container {
+    padding: 60px 8%;
+    max-width: 1600px;
+    margin: 0 auto;
+    background-color: var(--br-white);
+}
+
+/* Header Section */
+.br-header {
+    margin-bottom: 50px;
+}
+
+.br-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--br-midnight);
+    margin-bottom: 12px;
+}
+
+.br-subtitle {
+    font-size: 1.1rem;
+    color: var(--br-slate);
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+/* Filter Bar */
+.br-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 45px;
+    padding: 15px 25px;
+    background: var(--br-bg-light);
+    border: 1px solid var(--br-border);
+    border-radius: 12px;
+}
+
+.br-select-group {
+    display: flex;
+    gap: 15px;
+}
+
+.br-select-group select {
+    padding: 10px 20px;
+    border: 1px solid var(--br-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--br-midnight);
+    background: var(--br-white);
+    cursor: pointer;
+    transition: var(--br-transition);
+    outline: none;
+}
+
+.br-select-group select:hover {
+    border-color: var(--br-midnight);
+}
+
+.br-total-count {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--br-slate);
+}
+
+/* Main Collection Grid */
+.br-main-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns desktop */
+    gap: 30px;
+    margin-top: 40px;
+}
+
+/* Individual Book Card */
+.br-book-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: var(--br-transition);
+}
+
+.br-img-box {
+    position: relative;
+    aspect-ratio: 2 / 3; /* Maintains vertical book shape */
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    box-shadow: var(--br-card-shadow);
+    margin-bottom: 15px;
+}
+
+.br-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+/* Hover Effect: Gentle Zoom */
+.br-book-card:hover .br-img-box img {
+    transform: scale(1.08);
+}
+
+/* Category Pill Badge */
+.br-cat-pill {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--br-midnight);
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Book Details Text */
+.br-book-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--br-midnight);
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.br-author-name {
+    font-size: 0.9rem;
+    color: var(--br-slate);
+    margin: 0;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Desktop to Tablet transition */
+@media (max-width: 1400px) {
+    .br-main-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 1100px) {
+    .br-main-grid { grid-template-columns: repeat(3, 1fr); }
+    .br-page-container { padding: 40px 5%; }
+}
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+    .br-page-container {
+        padding: 40px 20px;
+    }
+
+    .br-title {
+        font-size: 2.4rem;
+        line-height: 1.1;
+    }
+
+    .br-filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .br-select-group {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .br-select-group select {
+        width: 100%;
+    }
+
+    /* 2-column mobile layout exactly as shown in screenshot */
+    .br-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .br-book-name {
+        font-size: 1rem;
+    }
+}
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1280px) {
+    .br-main-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 1024px) {
+    .br-main-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Mobile 2-Column Grid */
+@media (max-width: 768px) {
+    .br-page-container { padding: 40px 20px; }
+    .br-main-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    .br-title { font-size: 2.2rem; }
+    .br-filter-bar { flex-direction: column; gap: 15px; align-items: flex-start; }
+}

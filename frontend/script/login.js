@@ -1,124 +1,125 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('loginForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const loader = document.getElementById('loader');
-  const btnText = document.getElementById('btnText');
-  const generalError = document.getElementById('generalError');
+"use strict";
 
-  const LOGIN_API = 'http://localhost:3000/users/login';
+document.addEventListener("DOMContentLoaded", () => {
 
-  loginForm.addEventListener('submit', async (e) => {
+  const loginForm    = document.getElementById("loginForm");
+  const submitBtn    = document.getElementById("submitBtn");
+  const loader       = document.getElementById("loader");
+  const btnText      = document.getElementById("btnText");
+  const generalError = document.getElementById("generalError");
+
+  const LOGIN_API = "http://localhost:3000/users/login";
+
+  /**
+   * EXTRACTION HELPER: Decodes the JWT payload without a library
+   */
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error("Token decoding failed", e);
+      return null;
+    }
+  }
+
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // Initial Reset & UI feedback
     clearErrors();
 
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
+    const email    = document.getElementById("email")?.value.trim();
+    const password = document.getElementById("password")?.value;
 
-    // Trim to prevent whitespace errors
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-
-    // Validation
-    let isValid = true;
-
+    let valid = true;
     if (!validateEmail(email)) {
-      showError('email', 'Please enter a valid email address.');
-      isValid = false;
+      showFieldError("email", "Please enter a valid email address.");
+      valid = false;
     }
-
-    if (password.length === 0) {
-      showError('password', 'Password cannot be empty.');
-      isValid = false;
+    if (!password) {
+      showFieldError("password", "Password cannot be empty.");
+      valid = false;
     }
+    if (!valid) return;
 
-    if (!isValid) return;
-
-    // Prevent Double Submissions & show loading
-    setLoadingState(true);
+    setLoading(true);
 
     try {
-      const response = await fetch(LOGIN_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+      const res = await fetch(LOGIN_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ email, password })
       });
-      const result = await response.json();
 
-      if (response.ok) {
-        //store token for authenticated requests
-        if (result.token) {
-          localStorage.setItem('token', result.token);
-        }
+      const data = await res.json();
 
-        //Role-Based Redirection
-        const role = result.user?.role || 'user';
+      if (res.ok && data.token) {
+        // 1. Save the token
+        localStorage.setItem("access_token", data.token);
 
-        if (role === 'admin') {
-          window.location.replace('admin.html');
+        // 2. EXTRACT the role from the JWT payload
+        const decoded = parseJwt(data.token);
+        const role = decoded?.role || "user"; // Fallback to user if not found
+
+        // 3. Redirect based on extracted role
+        if (role === "admin") {
+          window.location.replace("admin.html");
         } else {
-          window.location.replace('dashboard.html');
+          window.location.replace("dashboard.html");
         }
 
       } else {
-        handleBackendError(result.message || 'Login failed. Please check your credentials.');
+        handleServerError(data.message || "Login failed.");
       }
 
     } catch (err) {
-      //Network/Server Error
-      generalError.textContent = "Unable to connect to the server. Please check your internet.";
-      generalError.style.display = 'block';
+      if (generalError) {
+        generalError.textContent = "Unable to connect to the server.";
+        generalError.style.display = "block";
+      }
     } finally {
-      setLoadingState(false);
+      setLoading(false);
     }
   });
 
-  // Helper Functions
+  // ── Helpers ──────────────────────────────────
 
   function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  function showError(field, message) {
-    const input = document.getElementById(field);
-    const errorSpan = document.getElementById(`${field}Error`);
-    input.classList.add('invalid');
-    errorSpan.textContent = message;
-    errorSpan.style.display = 'block';
+  function showFieldError(fieldId, message) {
+    const input = document.getElementById(fieldId);
+    const span  = document.getElementById(`${fieldId}Error`);
+    if (input) input.classList.add("invalid");
+    if (span) { span.textContent = message; span.style.display = "block"; }
   }
 
   function clearErrors() {
-    document.querySelectorAll('input').forEach(i => i.classList.remove('invalid'));
-    document.querySelectorAll('.error-msg').forEach(s => s.textContent = '');
-    generalError.textContent = '';
-    generalError.style.display = 'none';
+    document.querySelectorAll("input").forEach(i => i.classList.remove("invalid"));
+    document.querySelectorAll(".error-msg").forEach(s => { s.textContent = ""; s.style.display = "none"; });
+    if (generalError) generalError.style.display = "none";
   }
 
-  function setLoadingState(isLoading) {
-    submitBtn.disabled = isLoading;
-    if (isLoading) {
-      loader.style.display = 'block';
-      btnText.textContent = 'Authenticating...';
-    } else {
-      loader.style.display = 'none';
-      btnText.textContent = 'Login';
-    }
+  function setLoading(isLoading) {
+    if (submitBtn) submitBtn.disabled = isLoading;
+    if (loader) loader.style.display = isLoading ? "block" : "none";
+    if (btnText) btnText.textContent = isLoading ? "Authenticating…" : "Login";
   }
 
-  function handleBackendError(msg) {
-    const lowerMsg = msg.toLowerCase();
-    //error message parsing to detrimine  if it's related to email,password or general error
-    if (lowerMsg.includes('email')) {
-      showError('email', msg);
-    } else if (lowerMsg.includes('password')) {
-      showError('password', msg);
-    } else {
+  function handleServerError(msg) {
+    const lower = msg.toLowerCase();
+    if (lower.includes("email")) showFieldError("email", msg);
+    else if (lower.includes("password")) showFieldError("password", msg);
+    else if (generalError) {
       generalError.textContent = msg;
-      generalError.style.display = 'block';
+      generalError.style.display = "block";
     }
   }
 });
