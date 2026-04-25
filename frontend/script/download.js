@@ -1,7 +1,40 @@
 'use strict';
-
+// const API_BASE="https://hermata-knowledge-hub.onrender.com"
 const API_BASE = 'http://localhost:3000';
 
+// ── Update nav based on login state ──────────────────
+function updateNavAuth() {
+  const token    = localStorage.getItem('access_token');
+  const userName = localStorage.getItem('user_name');
+
+  const loggedOut = document.getElementById('auth-logged-out');
+  const loggedIn  = document.getElementById('auth-logged-in');
+  const nameEl    = document.getElementById('user-display-name');
+  const avatarEl  = document.getElementById('user-avatar');
+
+  if (!loggedOut || !loggedIn) return;
+
+  if (token && userName) {
+    loggedOut.style.display = 'none';
+    loggedIn.style.display  = 'flex';
+    nameEl.textContent      = userName;
+    avatarEl.textContent    = userName.charAt(0).toUpperCase();
+  } else {
+    loggedOut.style.display = 'flex';
+    loggedIn.style.display  = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateNavAuth();
+
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_name');
+    window.location.replace('login.html');
+  });
+});
 /* MOBILE NAV TOGGLE  */
 (function initNavToggle() {
   const toggle     = document.getElementById('menuToggle');
@@ -88,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch(`${API_BASE}/books/read/${bookId}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}` // FIX: Consistent key
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}` 
         }
       });
 
@@ -131,40 +164,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Favorites */
-  document.getElementById('btn-fav')?.addEventListener('click', async () => {
-    if (!token) {
+ document.getElementById('btn-fav')?.addEventListener('click', async () => {
+  if (!token) {
+    window.location.href = `login.html?next=download.html%3Fid%3D${bookId}`;
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/books/add-to-favorites/${bookId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    //  Handle unauthorized (expired/invalid token)
+    if (res.status === 401) {
       window.location.href = `login.html?next=download.html%3Fid%3D${bookId}`;
       return;
     }
-    try {
-      const res = await fetch(`${API_BASE}/books/add-to-favorites/${bookId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`, // token variable already uses access_token
-          'Content-Type':  'application/json',
-        },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        document.getElementById('fav-text').textContent = 'Added to favorites ✓';
-        const btn = document.getElementById('btn-fav');
-        btn.style.color       = '#d97706';
-        btn.style.borderColor = '#d97706';
-        btn.disabled          = true;
-      } else {
-        const msg = data.message || '';
-        if (msg.toLowerCase().includes('already')) {
-          document.getElementById('fav-text').textContent = 'Already in favorites ✓';
-          document.getElementById('btn-fav').disabled = true;
-        } else {
-          alert(msg || 'Could not add to favorites.');
-        }
-      }
-    } catch (err) {
-      console.error('[download.js] Favorites error:', err);
-      alert('Unable to save favorite. Please try again.');
-    }
-  });
 
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById('fav-text').textContent = 'Added to favorites ✓';
+      const btn = document.getElementById('btn-fav');
+      btn.style.color = '#d97706';
+      btn.style.borderColor = '#d97706';
+      btn.disabled = true;
+    } else {
+      const msg = data.message || '';
+
+      if (msg.toLowerCase().includes('already')) {
+        document.getElementById('fav-text').textContent = 'Already in favorites ✓';
+        document.getElementById('btn-fav').disabled = true;
+      } else {
+        alert(msg || 'Could not add to favorites.');
+      }
+    }
+  } catch (err) {
+    console.error('[download.js] Favorites error:', err);
+    alert('Unable to save favorite. Please try again.');
+  }
+});
   loadBookDetails();
 });

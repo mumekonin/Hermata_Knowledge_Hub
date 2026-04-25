@@ -31,7 +31,9 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cloudinary": "^2.5.1",
+    "groq-sdk": "^1.1.2",
     "mongoose": "^9.4.1",
+    "openai": "^6.34.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -63,11 +65,15 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    "moduleFilePatterns": ["**/*.module.ts"],
+    "moduleFilePatterns": [
+      "**/*.module.ts"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": ["**/*.(t|j)s"],
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

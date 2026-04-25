@@ -452,3 +452,83 @@ button {
   background: var(--color-midnight);
   color: #fff;
 }
+/* ── Auth group ──────────────────────────────────────── */
+#auth-logged-out {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#auth-logged-in {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── User avatar circle ──────────────────────────────── */
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-orange);
+  color: var(--color-white);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: default;
+  user-select: none;
+  /* double ring: white gap + orange outer */
+  box-shadow:
+    0 0 0 2px var(--color-white),
+    0 0 0 3.5px var(--color-orange);
+  transition: box-shadow 0.2s var(--ease-smooth),
+              background  0.2s var(--ease-smooth);
+}
+
+.user-avatar:hover {
+  background: var(--color-orange-dk);
+  box-shadow:
+    0 0 0 2px var(--color-white),
+    0 0 0 3.5px var(--color-orange-dk);
+}
+
+/* ── User display name ───────────────────────────────── */
+.auth-user-name {
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-midnight);
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis; /* trims long emails gracefully */
+}
+
+/* ── Logout button ───────────────────────────────────── */
+.auth-link--logout {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-slate);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background  0.2s var(--ease-smooth),
+              color       0.2s var(--ease-smooth),
+              border-color 0.2s var(--ease-smooth);
+}
+
+.auth-link--logout:hover {
+  background: var(--color-midnight);
+  border-color: var(--color-midnight);
+  color: var(--color-white);
+}

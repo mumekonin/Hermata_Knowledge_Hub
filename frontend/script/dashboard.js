@@ -1,7 +1,40 @@
 'use strict';
-
+// const API_BASE="https://hermata-knowledge-hub.onrender.com"
 const API_BASE = 'http://localhost:3000';
+  
+// ── Update nav based on login state ──────────────────
+function updateNavAuth() {
+  const token    = localStorage.getItem('access_token');
+  const userName = localStorage.getItem('user_name');
 
+  const loggedOut = document.getElementById('auth-logged-out');
+  const loggedIn  = document.getElementById('auth-logged-in');
+  const nameEl    = document.getElementById('user-display-name');
+  const avatarEl  = document.getElementById('user-avatar');
+
+  if (!loggedOut || !loggedIn) return;
+
+  if (token && userName) {
+    loggedOut.style.display = 'none';
+    loggedIn.style.display  = 'flex';
+    nameEl.textContent      = userName;
+    avatarEl.textContent    = userName.charAt(0).toUpperCase();
+  } else {
+    loggedOut.style.display = 'flex';
+    loggedIn.style.display  = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateNavAuth();
+
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_name');
+    window.location.replace('login.html');
+  });
+});
 /*  MOBILE NAV TOGGLE  */
 (function initNavToggle() {
   const toggle     = document.getElementById('menuToggle');

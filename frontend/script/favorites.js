@@ -1,9 +1,31 @@
 'use strict';
-
+// const API_BASE="https://hermata-knowledge-hub.onrender.com"
 const API_BASE = 'http://localhost:3000';
 
-/** * Helper: Escapes HTML to prevent XSS attacks when rendering book data
- */
+// ── Update nav based on login state ──────────────────
+function updateNavAuth() {
+  const token    = localStorage.getItem('access_token');
+  const userName = localStorage.getItem('user_name');
+
+  const loggedOut = document.getElementById('auth-logged-out');
+  const loggedIn  = document.getElementById('auth-logged-in');
+  const nameEl    = document.getElementById('user-display-name');
+  const avatarEl  = document.getElementById('user-avatar');
+
+  if (!loggedOut || !loggedIn) return;
+
+  if (token && userName) {
+    loggedOut.style.display = 'none';
+    loggedIn.style.display  = 'flex';
+    nameEl.textContent      = userName;
+    avatarEl.textContent    = userName.charAt(0).toUpperCase();
+  } else {
+    loggedOut.style.display = 'flex';
+    loggedIn.style.display  = 'none';
+  }
+}
+
+// ── Helper: prevent XSS ───────────────────────────────
 function escapeHtml(text) {
   if (!text) return '';
   const div = document.createElement('div');
@@ -11,11 +33,11 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-/* MOBILE NAV TOGGLE  */
+// ── Mobile nav toggle ─────────────────────────────────
 (function initNavToggle() {
-  const toggle = document.getElementById('menuToggle');
+  const toggle     = document.getElementById('menuToggle');
   const navWrapper = document.getElementById('navWrapper');
-  const icon = document.getElementById('toggleIcon');
+  const icon       = document.getElementById('toggleIcon');
   if (!toggle || !navWrapper || !icon) return;
 
   toggle.addEventListener('click', () => {
@@ -25,7 +47,7 @@ function escapeHtml(text) {
   });
 }());
 
-/* SEARCH ROUTING  */
+// ── Search routing ────────────────────────────────────
 function goToSearch(query) {
   const q = query.trim();
   if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
@@ -41,7 +63,7 @@ function goToSearch(query) {
   });
 
   const heroInput = document.getElementById('hero-search-input');
-  const heroBtn = document.getElementById('hero-search-btn');
+  const heroBtn   = document.getElementById('hero-search-btn');
 
   heroBtn?.addEventListener('click', () => goToSearch(heroInput.value));
   heroInput?.addEventListener('keypress', (e) => {
@@ -49,31 +71,48 @@ function goToSearch(query) {
   });
 }());
 
-/* MAIN  */
+// ── Main ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // updateNavAuth() assumed to be in auth.js
-  if (typeof updateNavAuth === 'function') updateNavAuth(); 
 
-  const grid = document.getElementById('fav-grid');
+  // Update nav — runs once here, nowhere else
+  updateNavAuth();
+
+  const grid      = document.getElementById('fav-grid');
+  const token     = localStorage.getItem('access_token');
   const logoutBtn = document.getElementById('logout-btn');
-  const token = localStorage.getItem('access_token'); // Fix: Matches login.js
 
-  /* Fetch favorites  */
+  // Single logout handler — registered once here only
+  logoutBtn?.addEventListener('click', () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_name');
+    window.location.replace('login.html');
+  });
+
+  // Stop here if not on favorites page
+  if (!grid) return;
+
+  // Redirect if not logged in
+  if (!token) {
+    window.location.replace('login.html');
+    return;
+  }
+
+  // ── Fetch favorites ───────────────────────────────
   async function fetchFavorites() {
-    if (!grid) return;
     grid.innerHTML = '<p style="color:#64748b;grid-column:1/-1;padding:20px;">Loading your favorites…</p>';
 
     try {
       const res = await fetch(`${API_BASE}/books/my-favorites`, {
-        method: 'GET',
+        method:  'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          'Content-Type':  'application/json',
         },
       });
 
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('access_token'); // Fix: Clear correct key
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_name');
         window.location.replace('login.html');
         return;
       }
@@ -94,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* Render  */
+  // ── Render favorites ──────────────────────────────
   function renderFavorites(favorites) {
     if (!favorites || favorites.length === 0) {
       grid.innerHTML = `
@@ -106,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
       return;
     }
+
     grid.innerHTML = favorites.map(({ book }) => `
       <a href="download.html?id=${book.id}" class="fav-card">
         <div class="fav-img-box">
@@ -120,15 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
-  /* Logout  */
-  logoutBtn?.addEventListener('click', () => {
-    localStorage.removeItem('access_token'); // Fix: Clear correct key
-    window.location.replace('login.html');
-  });
+  fetchFavorites();
 
-  if (token) {
-    fetchFavorites();
-  } else {
-    window.location.replace('login.html');
-  }
 });

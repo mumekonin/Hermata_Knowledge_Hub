@@ -7,20 +7,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const loader       = document.getElementById("loader");
   const btnText      = document.getElementById("btnText");
   const generalError = document.getElementById("generalError");
-
+  // const LOGIN_API = "https://hermata-knowledge-hub.onrender.com/users/login"
   const LOGIN_API = "http://localhost:3000/users/login";
 
-  /**
-   * EXTRACTION HELPER: Decodes the JWT payload without a library
-   */
+  // ── Decode JWT payload without a library ─────────
   function parseJwt(token) {
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-
+      const jsonPayload = decodeURIComponent(
+        window.atob(base64).split('').map((c) => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join('')
+      );
       return JSON.parse(jsonPayload);
     } catch (e) {
       console.error("Token decoding failed", e);
@@ -52,22 +51,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch(LOGIN_API, {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ email, password })
+        body:    JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.token) {
+
         // 1. Save the token
         localStorage.setItem("access_token", data.token);
 
-        // 2. EXTRACT the role from the JWT payload
-        const decoded = parseJwt(data.token);
-        const role = decoded?.role || "user"; // Fallback to user if not found
+        // 2. Decode JWT and save email for the navbar avatar
+        const decoded   = parseJwt(data.token);
+        const role      = decoded?.role || "user";
+        const userEmail = decoded?.email || email;
 
-        // 3. Redirect based on extracted role
+        localStorage.setItem("user_name", userEmail);
+
+        // 3. Redirect based on role
         if (role === "admin") {
           window.location.replace("admin.html");
         } else {
@@ -88,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ── Helpers ──────────────────────────────────
+  // ── Helpers ───────────────────────────────────────
 
   function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -98,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById(fieldId);
     const span  = document.getElementById(`${fieldId}Error`);
     if (input) input.classList.add("invalid");
-    if (span) { span.textContent = message; span.style.display = "block"; }
+    if (span)  { span.textContent = message; span.style.display = "block"; }
   }
 
   function clearErrors() {
@@ -109,17 +112,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setLoading(isLoading) {
     if (submitBtn) submitBtn.disabled = isLoading;
-    if (loader) loader.style.display = isLoading ? "block" : "none";
-    if (btnText) btnText.textContent = isLoading ? "Authenticating…" : "Login";
+    if (loader)    loader.style.display  = isLoading ? "block" : "none";
+    if (btnText)   btnText.textContent   = isLoading ? "Authenticating…" : "Login";
   }
 
   function handleServerError(msg) {
     const lower = msg.toLowerCase();
-    if (lower.includes("email")) showFieldError("email", msg);
+    if (lower.includes("email"))         showFieldError("email", msg);
     else if (lower.includes("password")) showFieldError("password", msg);
     else if (generalError) {
       generalError.textContent = msg;
       generalError.style.display = "block";
     }
   }
+
 });

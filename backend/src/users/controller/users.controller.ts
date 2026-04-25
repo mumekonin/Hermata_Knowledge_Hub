@@ -41,7 +41,7 @@ export class UserController {
 // http://localhost:3000/users/allUsersByRole/admin
 // http://localhost:3000/books/create-category
 // http://localhost:3000/books/upload-book
-// http://localhost:3000/books/get-all-books
+// http://localhost:3000/boo ks/get-all-books
 // http://localhost:3000/books/update-category/
 // http://localhost:3000/books/update-book/69d76c03aad9677bf4b3de14
 // http://localhost:3000/books/get-all-categories
