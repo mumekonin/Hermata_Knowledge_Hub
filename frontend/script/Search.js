@@ -1,5 +1,5 @@
 'use strict';
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://hermata-knowledge-hub.onrender.com';
 // Utility: Escapes HTML to prevent XSS attacks
 
 // ── Update nav based on login state ──────────────────

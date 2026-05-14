@@ -1,6 +1,6 @@
 'use strict';
 // const API_BASE="https://hermata-knowledge-hub.onrender.com"
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://hermata-knowledge-hub.onrender.com';
   
 // ── Update nav based on login state ──────────────────
 function updateNavAuth() {

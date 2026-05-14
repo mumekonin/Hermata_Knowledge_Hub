@@ -1,4 +1,4 @@
-const AI_API_URL = 'http://localhost:3000/ai/chat'; 
+const AI_API_URL = 'https://hermata-knowledge-hub.onrender.com/ai/chat'; 
 
 // ── Language strings ────────────────────────────────
 const LANG = {

@@ -7,8 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loader       = document.getElementById("loader");
   const btnText      = document.getElementById("btnText");
   const generalError = document.getElementById("generalError");
-  // const LOGIN_API = "https://hermata-knowledge-hub.onrender.com/users/login"
-  const LOGIN_API = "http://localhost:3000/users/login";
+  const LOGIN_API = "https://hermata-knowledge-hub.onrender.com/users/login";
 
   // ── Decode JWT payload without a library ─────────
   function parseJwt(token) {
