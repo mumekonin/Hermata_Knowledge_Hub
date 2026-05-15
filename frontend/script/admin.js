@@ -3,7 +3,7 @@
 /* ============================================================
    CONFIG
 ============================================================ */
-// const API_BASE="https://hermata-knowledge-hub.onrender.com"
+// const API_BASE="https://localhost:3000"
 const API_BASE = "https://hermata-knowledge-hub.onrender.com";
 
 /* ============================================================
